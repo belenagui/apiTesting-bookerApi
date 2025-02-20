@@ -1,0 +1,182 @@
+{
+	"info": {
+		"_postman_id": "8a704a82-065b-4b7f-9fe4-4e7a56b4de63",
+		"name": "Resful-booker Con data driven csv",
+		"description": "**DOCUMENTACION :** [Documentacion de La API](https://restful-booker.herokuapp.com/apidoc/index.html)\n\nAPI DE RERSERVAS DE HOTELES",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34513513"
+	},
+	"item": [
+		{
+			"name": "Create booking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"try {\r",
+							"    const response = await pm.sendRequest({\r",
+							"        url: \"https://restful-booker.herokuapp.com\",\r",
+							"        method: \"GET\"\r",
+							"    });\r",
+							"\r",
+							"    console.log(response.json());\r",
+							"} catch (err) {\r",
+							"    console.error(err);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Saving booking id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    var bookingId = jsonData.bookingid;\r",
+							"\r",
+							"    pm.environment.set(\"BookingId\",bookingId);\r",
+							"    pm.expect(bookingId).to.not.be.null\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"firstname\": \"{{_firstName}}\",\r\n  \"lastname\": \"{{_lastName}}\",\r\n  \"totalprice\": 250,\r\n  \"depositpaid\": true,\r\n  \"bookingdates\": {\r\n    \"checkin\": \"2025-03-10\",\r\n    \"checkout\": \"2025-03-15\"\r\n  },\r\n  \"additionalneeds\": \"Breakfast\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/booking",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get parameters by giving an id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verifying firstName is equal to the created previously\", function () {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    var current_FirstName = jsonData.firstname\r",
+							"    var expected_FirstName = pm.variables.get(\"_firstName\")\r",
+							"    console.log(\"current value is: \" + current_FirstName + \r",
+							"    \" Expected value is: \" + expected_FirstName)\r",
+							"    pm.expect(current_FirstName).eql(expected_FirstName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verifying lastName is equal to the created previously\", function () {\r",
+							"    var jsonData = pm.response.json()\r",
+							"    var current_lastName = jsonData.lastname\r",
+							"    var expected_lastName = pm.variables.get(\"_lastName\")\r",
+							"    pm.expect(current_lastName).eql(expected_lastName)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/booking/{{BookingId}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"booking",
+						"{{BookingId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BaseUrl",
+			"value": "https://restful-booker.herokuapp.com",
+			"type": "string"
+		},
+		{
+			"key": "base_url",
+			"value": "https://restful-booker.herokuapp.com",
+			"type": "default"
+		}
+	]
+}
